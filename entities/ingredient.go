@@ -30,7 +30,14 @@ func (i *Ingredient) DeleteIngredient(db *sql.DB) error {
 
 // CreateIngredient ...
 func (i *Ingredient) CreateIngredient(db *sql.DB) error {
-	return errors.New("Not implemented")
+	err := db.QueryRow(
+		"INSERT INTO ingredients(name, type) VALUES($1, $2) RETURNING id",
+		i.Name, i.Type).Scan(&i.ID)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetIngredients ...
