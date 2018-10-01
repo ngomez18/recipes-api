@@ -11,22 +11,27 @@ type Ingredient struct {
 	Type string `json:"type"`
 }
 
-func (p *Ingredient) getIngredient(db *sql.DB) error {
+// GetIngredient ...
+func (i *Ingredient) GetIngredient(db *sql.DB) error {
 	return errors.New("Not implemented")
 }
 
-func (p *Ingredient) updateIngredient(db *sql.DB) error {
+// UpdateIngredient ...
+func (i *Ingredient) UpdateIngredient(db *sql.DB) error {
 	return errors.New("Not implemented")
 }
 
-func (p *Ingredient) deleteIngredient(db *sql.DB) error {
+// DeleteIngredient ...
+func (i *Ingredient) DeleteIngredient(db *sql.DB) error {
 	return errors.New("Not implemented")
 }
 
-func (p *Ingredient) createIngredient(db *sql.DB) error {
+// CreateIngredient ...
+func (i *Ingredient) CreateIngredient(db *sql.DB) error {
 	return errors.New("Not implemented")
 }
 
-func getIngredients(db *sql.DB, start, count int) ([]Ingredient, error) {
+// GetIngredients ...
+func GetIngredients(db *sql.DB, start, count int) ([]Ingredient, error) {
 	return nil, errors.New("Not implemented")
 }
