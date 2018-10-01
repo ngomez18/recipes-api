@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	rand "math/rand"
@@ -63,6 +65,36 @@ func TestFetchNonExistingIngredient(t *testing.T) {
 
 	if body := response.Body.String(); body != "[]" {
 		t.Errorf("Expected an empty array. Got %s", body)
+	}
+}
+
+func TestCreateIngredient(t *testing.T) {
+	clearIngredientsTable()
+
+	fakeName := "test ingredient"
+	fakeType := "vegetable"
+	payload := []byte(fmt.Sprintf(`{"name":"%s","type":"%s"}`, fakeName, fakeType))
+
+	req, _ := http.NewRequest("POST", "/api/ingredient", bytes.NewBuffer(payload))
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusCreated, response.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if m["name"] != fakeName {
+		t.Errorf("Expected Ingredient name to be '%s'. Got '%v'", fakeName, m["name"])
+	}
+
+	if m["type"] != fakeType {
+		t.Errorf("Expected Ingredient type to be '%s'. Got '%v'", fakeType, m["type"])
+	}
+
+	// the id is compared to 1.0 because JSON unmarshaling converts numbers to
+	// floats, when the target is a map[string]interface{}
+	if m["id"] != 1.0 {
+		t.Errorf("Expected Ingredient ID to be '1'. Got '%v'", m["id"])
 	}
 }
 
