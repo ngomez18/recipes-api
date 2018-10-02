@@ -20,7 +20,7 @@ type App struct {
 
 // Initialize app components
 func (a *App) Initialize(host, port, user, password, dbname string) {
-	connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+	connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		host, port, user, password, dbname)
 	fmt.Println(connection)
 	var err error
@@ -55,7 +55,12 @@ func (a *App) createIngredient(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, i)
 }
 
+func (a *App) getIngredients(w http.ResponseWriter, r *http.Request) {
+	respondWithJSON(w, http.StatusCreated, entities.Ingredient{Name: "Ing1", Type: "Food"})
+}
+
 func (a *App) initializeRoutes() {
+	a.Router.HandleFunc("/ingredients", a.getIngredients).Methods("GET")
 	a.Router.HandleFunc("/ingredient", a.createIngredient).Methods("POST")
 }
 
