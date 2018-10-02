@@ -9,6 +9,18 @@
 			"revisionTime": "2018-09-03T15:43:05Z"
 		},
 		{
+			"checksumSHA1": "Cg7/HJQxWq9AWi8VEkPXSpFWqSo=",
+			"path": "github.com/joho/godotenv",
+			"revision": "c0b86d615e06d6fa5f869364d68f774ba49a86e3",
+			"revisionTime": "2018-09-27T05:32:03Z"
+		},
+		{
+			"checksumSHA1": "6ZVvq9gdocZXtsQpVPcQWWmZIf8=",
+			"path": "github.com/joho/godotenv/autoload",
+			"revision": "c0b86d615e06d6fa5f869364d68f774ba49a86e3",
+			"revisionTime": "2018-09-27T05:32:03Z"
+		},
+		{
 			"checksumSHA1": "j+vBozuP9t1baDRdfEykQSP4AGw=",
 			"path": "github.com/lib/pq",
 			"revision": "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79",
