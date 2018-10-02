@@ -13,3 +13,6 @@
 
 # .env file with sensitive information
 .env
+
+# Packages fetched by vendor
+vendor/github.com
