@@ -33,5 +33,9 @@
 			"revisionTime": "2018-08-23T06:29:44Z"
 		}
 	],
-	"rootPath": "github.com/ngomez22/recipes-api"
+	"rootPath": "github.com/ngomez22/recipes-api",
+	"heroku": {
+        "install" : [ "./..." ],
+        "goVersion": "go1.11"
+    }
 }
