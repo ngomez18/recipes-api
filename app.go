@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	"github.com/ngomez22/recipes-api/entities"
 )
 
 // App model
@@ -21,7 +22,7 @@ type App struct {
 func (a *App) Initialize(host, port, user, password, dbname string) {
 	connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-
+	fmt.Println(connection)
 	var err error
 	a.DB, err = sql.Open("postgres", connection)
 	if err != nil {
@@ -29,11 +30,33 @@ func (a *App) Initialize(host, port, user, password, dbname string) {
 	}
 
 	a.Router = mux.NewRouter()
+	a.initializeRoutes()
 }
 
 // Run the server
 func (a *App) Run(addr string) {
 	log.Fatal(http.ListenAndServe(":8000", a.Router))
+}
+
+func (a *App) createIngredient(w http.ResponseWriter, r *http.Request) {
+	var i entities.Ingredient
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&i); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	if err := i.CreateIngredient(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, i)
+}
+
+func (a *App) initializeRoutes() {
+	a.Router.HandleFunc("/ingredient", a.createIngredient).Methods("POST")
 }
 
 // Responde with a JSON
