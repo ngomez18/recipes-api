@@ -13,8 +13,8 @@ func main() {
 
 	a := App{}
 	a.Initialize(
-		strings.TrimSpace(os.Getenv("APP_DB_USERNAME")),
-		strings.TrimSpace(os.Getenv("APP_DB_USERNAME")),
+		strings.TrimSpace(os.Getenv("APP_DB_HOST")),
+		strings.TrimSpace(os.Getenv("APP_DB_PORT")),
 		strings.TrimSpace(os.Getenv("APP_DB_USERNAME")),
 		strings.TrimSpace(os.Getenv("APP_DB_PASSWORD")),
 		strings.TrimSpace(os.Getenv("APP_DB_NAME")))
