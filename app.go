@@ -9,7 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	"github.com/ngomez22/recipes-api/entities"
+	e "github.com/ngomez22/recipes-api/entities"
+	u "github.com/ngomez22/recipes-api/utils"
 )
 
 // App model
@@ -39,41 +40,27 @@ func (a *App) Run(addr string) {
 }
 
 func (a *App) createIngredient(w http.ResponseWriter, r *http.Request) {
-	var i entities.Ingredient
+	var i e.Ingredient
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&i); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		u.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	defer r.Body.Close()
 
 	if err := i.CreateIngredient(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		u.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, i)
+	u.RespondWithJSON(w, http.StatusCreated, i)
 }
 
 func (a *App) getIngredients(w http.ResponseWriter, r *http.Request) {
-	respondWithJSON(w, http.StatusCreated, entities.Ingredient{Name: "Ing1", Type: "Food"})
+	u.RespondWithJSON(w, http.StatusCreated, e.Ingredient{Name: "Ing1", Type: "Food"})
 }
 
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/ingredients", a.getIngredients).Methods("GET")
 	a.Router.HandleFunc("/ingredient", a.createIngredient).Methods("POST")
-}
-
-// Responde with a JSON
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(response)
-}
-
-// Respond with an error JSON
-func respondWithError(w http.ResponseWriter, code int, message string) {
-	respondWithJSON(w, code, map[string]string{"error": message})
 }
