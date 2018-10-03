@@ -30,7 +30,8 @@ func TestMain(m *testing.M) {
 		os.Getenv("TEST_DB_PORT"),
 		os.Getenv("TEST_DB_USERNAME"),
 		os.Getenv("TEST_DB_PASSWORD"),
-		os.Getenv("TEST_DB_NAME"))
+		os.Getenv("TEST_DB_NAME"),
+		os.Getenv("TEST_DB_SSL"))
 
 	ensureIngredientsTableExists()
 
@@ -44,7 +45,7 @@ func TestMain(m *testing.M) {
 func TestEmptyIngredientsTable(t *testing.T) {
 	clearIngredientsTable()
 
-	req, _ := http.NewRequest("GET", "/api/ingredients", nil)
+	req, _ := http.NewRequest("GET", "/ingredients", nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -58,7 +59,7 @@ func TestFetchNonExistingIngredient(t *testing.T) {
 	clearIngredientsTable()
 
 	id := rand.Int()
-	req, _ := http.NewRequest("GET", fmt.Sprintf("/api/ingredient/%s", strconv.Itoa(id)), nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/ingredient/%s", strconv.Itoa(id)), nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -75,7 +76,7 @@ func TestCreateIngredient(t *testing.T) {
 	fakeType := "vegetable"
 	payload := []byte(fmt.Sprintf(`{"name":"%s","type":"%s"}`, fakeName, fakeType))
 
-	req, _ := http.NewRequest("POST", "/api/ingredient", bytes.NewBuffer(payload))
+	req, _ := http.NewRequest("POST", "/ingredient", bytes.NewBuffer(payload))
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
