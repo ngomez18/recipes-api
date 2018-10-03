@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -13,11 +12,12 @@ func main() {
 
 	a := App{}
 	a.Initialize(
-		strings.TrimSpace(os.Getenv("APP_DB_HOST")),
-		strings.TrimSpace(os.Getenv("APP_DB_PORT")),
-		strings.TrimSpace(os.Getenv("APP_DB_USERNAME")),
-		strings.TrimSpace(os.Getenv("APP_DB_PASSWORD")),
-		strings.TrimSpace(os.Getenv("APP_DB_NAME")))
+		os.Getenv("APP_DB_HOST"),
+		os.Getenv("APP_DB_PORT"),
+		os.Getenv("APP_DB_USERNAME"),
+		os.Getenv("APP_DB_PASSWORD"),
+		os.Getenv("APP_DB_NAME"),
+		os.Getenv("APP_DB_SSL"))
 
 	a.Run(":8000")
 }
