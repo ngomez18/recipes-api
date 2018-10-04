@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // asdas
-	e "github.com/ngomez22/recipes-api/entities"
+	m "github.com/ngomez22/recipes-api/models"
 )
 
 var router *mux.Router
@@ -26,7 +26,7 @@ func Initialize(host, port, user, password, dbname, ssl string) {
 	fmt.Println("Connection established with DB")
 	fmt.Println(connection)
 
-	db.AutoMigrate(&e.Ingredient{})
+	db.AutoMigrate(&m.Ingredient{})
 	router = mux.NewRouter()
 }
 

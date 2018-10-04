@@ -5,13 +5,13 @@ import (
 	"net/http"
 
 	a "github.com/ngomez22/recipes-api/app"
-	e "github.com/ngomez22/recipes-api/entities"
+	m "github.com/ngomez22/recipes-api/models"
 	u "github.com/ngomez22/recipes-api/utils"
 )
 
 // CreateIngredient ...
 func CreateIngredient(w http.ResponseWriter, r *http.Request) {
-	var i e.Ingredient
+	var i m.Ingredient
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&i); err != nil {
 		u.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")

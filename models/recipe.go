@@ -1,4 +1,4 @@
-package entities
+package models
 
 // Recipe model object
 type Recipe struct {
