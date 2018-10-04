@@ -20,15 +20,24 @@ func main() {
 		os.Getenv("APP_DB_PASSWORD"),
 		os.Getenv("APP_DB_NAME"),
 		os.Getenv("APP_DB_SSL"))
-	initializeRoutes(app.GetRouter())
+	initializeIngredientRoutes(app.GetRouter())
+	initializeRecipeRoutes(app.GetRouter())
 	app.Run(":8000")
 	app.GetDB().Close()
 }
 
-func initializeRoutes(r *mux.Router) {
+func initializeIngredientRoutes(r *mux.Router) {
 	r.HandleFunc("/api/ingredient", c.CreateIngredient).Methods("POST")
 	r.HandleFunc("/api/ingredient/{id:[0-9]+}", c.GetIngredient).Methods("GET")
 	r.HandleFunc("/api/ingredients", c.GetIngredients).Methods("GET")
 	r.HandleFunc("/api/ingredient", c.UpdateIngredient).Methods("PUT")
 	r.HandleFunc("/api/ingredient/{id:[0-9]+}", c.DeleteIngredient).Methods("DELETE")
+}
+
+func initializeRecipeRoutes(r *mux.Router) {
+	r.HandleFunc("/api/recipe", c.CreateRecipe).Methods("POST")
+	r.HandleFunc("/api/recipe/{id:[0-9]+}", c.GetRecipe).Methods("GET")
+	r.HandleFunc("/api/recipes", c.GetRecipes).Methods("GET")
+	r.HandleFunc("/api/recipe", c.UpdateRecipe).Methods("PUT")
+	r.HandleFunc("/api/recipe/{id:[0-9]+}", c.DeleteRecipe).Methods("DELETE")
 }
