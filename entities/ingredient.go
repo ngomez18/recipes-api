@@ -3,19 +3,29 @@ package entities
 import (
 	"database/sql"
 	"errors"
+
+	"github.com/jinzhu/gorm"
 )
 
 // Ingredient model object
 type Ingredient struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
+	gorm.Model
+	Name string `json:"name" gorm:"type:varchar(100);not null"`
+	Type string `json:"type" gorm:"type:varchar(100);not null"`
+}
+
+// CreateIngredient ...
+func (i *Ingredient) CreateIngredient(db *gorm.DB) error {
+	if dbc := db.Create(&i); dbc.Error != nil {
+		// Ingredient creation failed
+		return dbc.Error
+	}
+	return nil
 }
 
 // GetIngredient ...
 func (i *Ingredient) GetIngredient(db *sql.DB) error {
-	return db.QueryRow("SELECT * FROM ingredients WHERE id=$1",
-		i.ID).Scan(&i.Name, &i.Type)
+	return errors.New("Not implemented")
 }
 
 // UpdateIngredient ...
@@ -28,38 +38,7 @@ func (i *Ingredient) DeleteIngredient(db *sql.DB) error {
 	return errors.New("Not implemented")
 }
 
-// CreateIngredient ...
-func (i *Ingredient) CreateIngredient(db *sql.DB) error {
-	err := db.QueryRow(
-		"INSERT INTO ingredients(name, type) VALUES($1, $2) RETURNING id",
-		i.Name, i.Type).Scan(&i.ID)
-
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // GetIngredients ...
 func GetIngredients(db *sql.DB, start, count int) ([]Ingredient, error) {
-	rows, err := db.Query(
-		"SELECT id, name, type FROM ingredients LIMIT $1 OFFSET $2",
-		count, start)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	ingredients := []Ingredient{}
-
-	for rows.Next() {
-		var i Ingredient
-		if err := rows.Scan(&i.ID, &i.Name, &i.Type); err != nil {
-			return nil, err
-		}
-		ingredients = append(ingredients, i)
-	}
-	return ingredients, nil
+	return nil, errors.New("Not implemented")
 }

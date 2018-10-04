@@ -1,5 +1,11 @@
 {
 	"comment": "",
+	"heroku": {
+		"goVersion": "go1.11",
+		"install": [
+			"./..."
+		]
+	},
 	"ignore": "test",
 	"package": [
 		{
@@ -7,6 +13,18 @@
 			"path": "github.com/gorilla/mux",
 			"revision": "9e1f5955c0d22b55d9e20d6faa28589f83b2faca",
 			"revisionTime": "2018-09-03T15:43:05Z"
+		},
+		{
+			"checksumSHA1": "qaQCNzcryTODq36tlUYJWCnZmUA=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "f6260a00852946a10a57e8bb9f505f19bc9389b7",
+			"revisionTime": "2018-09-22T11:59:11Z"
+		},
+		{
+			"checksumSHA1": "mfb/EusMwfajCPq0lwLWM/pvqI4=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
 		},
 		{
 			"checksumSHA1": "Cg7/HJQxWq9AWi8VEkPXSpFWqSo=",
@@ -33,9 +51,5 @@
 			"revisionTime": "2018-08-23T06:29:44Z"
 		}
 	],
-	"rootPath": "github.com/ngomez22/recipes-api",
-	"heroku": {
-        "install" : [ "./..." ],
-        "goVersion": "go1.11"
-    }
+	"rootPath": "github.com/ngomez22/recipes-api"
 }
