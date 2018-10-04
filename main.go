@@ -8,7 +8,6 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	app "github.com/ngomez22/recipes-api/app"
 	c "github.com/ngomez22/recipes-api/controllers"
-	u "github.com/ngomez22/recipes-api/utils"
 )
 
 func main() {
@@ -22,11 +21,14 @@ func main() {
 		os.Getenv("APP_DB_NAME"),
 		os.Getenv("APP_DB_SSL"))
 	initializeRoutes(app.GetRouter())
-	u.CheckTables()
 	app.Run(":8000")
 	app.GetDB().Close()
 }
 
 func initializeRoutes(r *mux.Router) {
 	r.HandleFunc("/api/ingredient", c.CreateIngredient).Methods("POST")
+	r.HandleFunc("/api/ingredient/{id:[0-9]+}", c.GetIngredient).Methods("GET")
+	r.HandleFunc("/api/ingredients", c.GetIngredients).Methods("GET")
+	r.HandleFunc("/api/ingredient", c.UpdateIngredient).Methods("PUT")
+	r.HandleFunc("/api/ingredient/{id:[0-9]+}", c.DeleteIngredient).Methods("DELETE")
 }

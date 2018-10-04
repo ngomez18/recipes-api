@@ -1,9 +1,6 @@
 package models
 
 import (
-	"database/sql"
-	"errors"
-
 	"github.com/jinzhu/gorm"
 )
 
@@ -16,29 +13,41 @@ type Ingredient struct {
 
 // CreateIngredient ...
 func (i *Ingredient) CreateIngredient(db *gorm.DB) error {
-	if dbc := db.Create(&i); dbc.Error != nil {
+	if response := db.Create(&i); response.Error != nil {
 		// Ingredient creation failed
-		return dbc.Error
+		return response.Error
 	}
 	return nil
 }
 
 // GetIngredient ...
-func (i *Ingredient) GetIngredient(db *sql.DB) error {
-	return errors.New("Not implemented")
-}
-
-// UpdateIngredient ...
-func (i *Ingredient) UpdateIngredient(db *sql.DB) error {
-	return errors.New("Not implemented")
-}
-
-// DeleteIngredient ...
-func (i *Ingredient) DeleteIngredient(db *sql.DB) error {
-	return errors.New("Not implemented")
+func GetIngredient(db *gorm.DB, id uint) (*Ingredient, error) {
+	ingredient := &Ingredient{}
+	response := db.First(ingredient, id)
+	return ingredient, response.Error
 }
 
 // GetIngredients ...
-func GetIngredients(db *sql.DB, start, count int) ([]Ingredient, error) {
-	return nil, errors.New("Not implemented")
+func GetIngredients(db *gorm.DB, start, count int) ([]Ingredient, error) {
+	ingredients := make([]Ingredient, 0)
+	response := db.Limit(count).Offset(start).Find(&ingredients)
+	return ingredients, response.Error
+}
+
+// UpdateIngredient ...
+func (i *Ingredient) UpdateIngredient(db *gorm.DB) error {
+	if response := db.Save(&i); response.Error != nil {
+		// Ingredient update failed
+		return response.Error
+	}
+	return nil
+}
+
+// DeleteIngredient ...
+func DeleteIngredient(db *gorm.DB, id uint) error {
+	if response := db.Where("id = ?", id).Delete(&Ingredient{}); response.Error != nil {
+		// Ingredient delete failed
+		return response.Error
+	}
+	return nil
 }
