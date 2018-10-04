@@ -26,7 +26,7 @@ func Initialize(host, port, user, password, dbname, ssl string) {
 	fmt.Println("Connection established with DB")
 	fmt.Println(connection)
 
-	db.AutoMigrate(&m.Ingredient{})
+	db.AutoMigrate(&m.Recipe{}, &m.Ingredient{})
 	router = mux.NewRouter()
 }
 
