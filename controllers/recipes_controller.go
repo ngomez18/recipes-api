@@ -12,7 +12,7 @@ import (
 	u "github.com/ngomez22/recipes-api/utils"
 )
 
-// CreateRecipe ...
+// CreateRecipe Handle a request to create a new recipe
 func CreateRecipe(w http.ResponseWriter, r *http.Request) {
 	var rec m.Recipe
 	decoder := json.NewDecoder(r.Body)
@@ -30,7 +30,7 @@ func CreateRecipe(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusCreated, rec)
 }
 
-// GetRecipe ...
+// GetRecipe Handle a request to get a specific recipe
 func GetRecipe(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -53,7 +53,7 @@ func GetRecipe(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusOK, i)
 }
 
-// GetRecipes ...
+// GetRecipes Handle a request to get all recipes
 func GetRecipes(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
@@ -74,7 +74,7 @@ func GetRecipes(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusOK, recipes)
 }
 
-// UpdateRecipe ...
+// UpdateRecipe Handle a request to update a given recipe
 func UpdateRecipe(w http.ResponseWriter, r *http.Request) {
 	var rec m.Recipe
 	decoder := json.NewDecoder(r.Body)
@@ -93,7 +93,7 @@ func UpdateRecipe(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusOK, rec)
 }
 
-// DeleteRecipe ...
+// DeleteRecipe Handle a request to delete a specific recipe
 func DeleteRecipe(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])

@@ -12,7 +12,7 @@ import (
 	u "github.com/ngomez22/recipes-api/utils"
 )
 
-// CreateIngredient ...
+// CreateIngredient Handle a request to create a new ingredient
 func CreateIngredient(w http.ResponseWriter, r *http.Request) {
 	var i m.Ingredient
 	decoder := json.NewDecoder(r.Body)
@@ -30,7 +30,7 @@ func CreateIngredient(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusCreated, i)
 }
 
-// GetIngredient ...
+// GetIngredient Handle a request to get a specific ingredient
 func GetIngredient(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	name := vars["name"]
@@ -49,7 +49,7 @@ func GetIngredient(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusOK, i)
 }
 
-// GetIngredients ...
+// GetIngredients Handle a request to get all ingredients
 func GetIngredients(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
@@ -70,7 +70,7 @@ func GetIngredients(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusOK, ingredients)
 }
 
-// UpdateIngredient ...
+// UpdateIngredient Handle a request to update a given ingredient
 func UpdateIngredient(w http.ResponseWriter, r *http.Request) {
 	var i m.Ingredient
 	decoder := json.NewDecoder(r.Body)
@@ -89,7 +89,7 @@ func UpdateIngredient(w http.ResponseWriter, r *http.Request) {
 	u.RespondWithJSON(w, http.StatusOK, i)
 }
 
-// DeleteIngredient ...
+// DeleteIngredient Handle an udpate to delete a specific ingredient
 func DeleteIngredient(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	name := vars["name"]
