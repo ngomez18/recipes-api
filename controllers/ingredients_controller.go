@@ -33,13 +33,9 @@ func CreateIngredient(w http.ResponseWriter, r *http.Request) {
 // GetIngredient ...
 func GetIngredient(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		u.RespondWithError(w, http.StatusBadRequest, "Invalid ingredient ID")
-		return
-	}
+	name := vars["name"]
 
-	i, err := m.GetIngredient(a.GetDB(), uint(id))
+	i, err := m.GetIngredient(a.GetDB(), string(name))
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -96,13 +92,9 @@ func UpdateIngredient(w http.ResponseWriter, r *http.Request) {
 // DeleteIngredient ...
 func DeleteIngredient(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		u.RespondWithError(w, http.StatusBadRequest, "Invalid ingredient ID")
-		return
-	}
+	name := vars["name"]
 
-	if err := m.DeleteIngredient(a.GetDB(), uint(id)); err != nil {
+	if err := m.DeleteIngredient(a.GetDB(), string(name)); err != nil {
 		u.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

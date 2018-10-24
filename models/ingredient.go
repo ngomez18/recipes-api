@@ -1,17 +1,20 @@
 package models
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
 
 // Ingredient model object
 type Ingredient struct {
-	gorm.Model
-	Name string `json:"name" gorm:"type:varchar(100);not null"`
-	Type string `json:"type" gorm:"type:varchar(100);not null"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Name      string `json:"name" gorm:"primary_key;type:varchar(100);not null"`
+	Type      string `json:"type" gorm:"type:varchar(100);not null"`
 }
 
-// CreateIngredient ...
+// CreateIngredient Save the given ingredient to the database
 func (i *Ingredient) CreateIngredient(db *gorm.DB) error {
 	if response := db.Create(&i); response.Error != nil {
 		// Ingredient creation failed
@@ -20,21 +23,21 @@ func (i *Ingredient) CreateIngredient(db *gorm.DB) error {
 	return nil
 }
 
-// GetIngredient ...
-func GetIngredient(db *gorm.DB, id uint) (*Ingredient, error) {
+// GetIngredient Get the ingredient with the given name from the database
+func GetIngredient(db *gorm.DB, name string) (*Ingredient, error) {
 	ingredient := &Ingredient{}
-	response := db.First(ingredient, id)
+	response := db.Where("name = ?", name).First(ingredient)
 	return ingredient, response.Error
 }
 
-// GetIngredients ...
+// GetIngredients Get all the ingredients from the database
 func GetIngredients(db *gorm.DB, start, count int) ([]Ingredient, error) {
 	ingredients := make([]Ingredient, 0)
 	response := db.Limit(count).Offset(start).Find(&ingredients)
 	return ingredients, response.Error
 }
 
-// UpdateIngredient ...
+// UpdateIngredient Update the given ingredient in the database
 func (i *Ingredient) UpdateIngredient(db *gorm.DB) error {
 	if response := db.Save(&i); response.Error != nil {
 		// Ingredient update failed
@@ -43,9 +46,9 @@ func (i *Ingredient) UpdateIngredient(db *gorm.DB) error {
 	return nil
 }
 
-// DeleteIngredient ...
-func DeleteIngredient(db *gorm.DB, id uint) error {
-	if response := db.Where("id = ?", id).Delete(&Ingredient{}); response.Error != nil {
+// DeleteIngredient Delete the ingredient with the given name from the database
+func DeleteIngredient(db *gorm.DB, name string) error {
+	if response := db.Where("name = ?", name).Delete(&Ingredient{}); response.Error != nil {
 		// Ingredient delete failed
 		return response.Error
 	}

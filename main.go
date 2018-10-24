@@ -28,10 +28,10 @@ func main() {
 
 func initializeIngredientRoutes(r *mux.Router) {
 	r.HandleFunc("/api/ingredient", c.CreateIngredient).Methods("POST")
-	r.HandleFunc("/api/ingredient/{id:[0-9]+}", c.GetIngredient).Methods("GET")
+	r.HandleFunc("/api/ingredient/{name}", c.GetIngredient).Methods("GET")
 	r.HandleFunc("/api/ingredients", c.GetIngredients).Methods("GET")
 	r.HandleFunc("/api/ingredient", c.UpdateIngredient).Methods("PUT")
-	r.HandleFunc("/api/ingredient/{id:[0-9]+}", c.DeleteIngredient).Methods("DELETE")
+	r.HandleFunc("/api/ingredient/{name}", c.DeleteIngredient).Methods("DELETE")
 }
 
 func initializeRecipeRoutes(r *mux.Router) {
