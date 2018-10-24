@@ -22,7 +22,7 @@ func main() {
 		os.Getenv("APP_DB_SSL"))
 	initializeIngredientRoutes(app.GetRouter())
 	initializeRecipeRoutes(app.GetRouter())
-	app.Run(":8000")
+	app.Run(":" + os.Getenv("PORT"))
 	app.GetDB().Close()
 }
 
