@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	a "github.com/ngomez22/recipes-api/app"
@@ -22,6 +23,7 @@ func CreateIngredient(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	i.Name = strings.ToLower(i.Name)
 	if err := i.CreateIngredient(a.GetDB()); err != nil {
 		u.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
