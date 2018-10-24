@@ -32,7 +32,7 @@ func Initialize(host, port, user, password, dbname, ssl string) {
 
 // Run the server
 func Run(addr string) {
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(addr, router))
 }
 
 // GetDB ...
