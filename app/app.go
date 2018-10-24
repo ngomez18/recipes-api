@@ -7,7 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres" // asdas
+	_ "github.com/jinzhu/gorm/dialects/postgres" // Blank import of DB manager package
 	m "github.com/ngomez22/recipes-api/models"
 )
 
