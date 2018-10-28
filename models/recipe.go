@@ -12,7 +12,7 @@ type Recipe struct {
 	Difficulty   int           `json:"difficulty" gorm:"type:integer;not null"`
 	Servings     int           `json:"servings" gorm:"type:integer;not null"`
 	Steps        *string       `json:"steps" gorm:"type:varchar(1000);not null"`
-	Ingredients  []*Ingredient `gorm:"many2many:recipe_ingredients"`
+	Ingredients  []*Ingredient `json:"ingredients" gorm:"many2many:recipe_ingredients"`
 }
 
 // CreateRecipe Save the given recipe to the database
