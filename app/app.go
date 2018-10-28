@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Blank import of DB manager package
@@ -32,7 +33,10 @@ func Initialize(host, port, user, password, dbname, ssl string) {
 
 // Run the server
 func Run(addr string) {
-	log.Fatal(http.ListenAndServe(addr, router))
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"HEAD", "OPTIONS", "GET", "POST", "PUT", "DELETE"})
+	log.Fatal(http.ListenAndServe(addr, handlers.CORS(originsOk, headersOk, methodsOk)(router)))
 }
 
 // GetDB ...
