@@ -32,7 +32,7 @@ func initializeDBIngredients() {
 }
 
 func clearIngredientsTable() {
-	db.Exec("DELETE * FROM ingredients")
+	db.Exec("DELETE FROM ingredients")
 }
 
 func TestIngredientTableExists(t *testing.T) {
@@ -40,15 +40,28 @@ func TestIngredientTableExists(t *testing.T) {
 	if (!db.HasTable(&m.Ingredient{}) || !db.HasTable("ingredients")) {
 		t.Errorf("Table wasn't created correctly")
 	}
+
+	var count int
+	db.Table("ingredients").Count(&count)
+	if count != 0 {
+		t.Errorf("Ingredients table isn't empty")
+	}
 }
 
 func TestCreateIngredient(t *testing.T) {
 	initializeDBIngredients()
+
+	var count int
+	db.Table("ingredients").Count(&count)
+	if count != 0 {
+		t.Fatalf("Ingredient table isn't empty")
+	}
+
 	err := ingredient.CreateIngredient(db)
 	if err != nil {
 		t.Fatalf("Error creating ingredient")
 	}
-	var count int
+
 	db.Table("ingredients").Count(&count)
 	if count != 1 {
 		t.Errorf("Ingredient wasn't created correctly")
