@@ -11,7 +11,7 @@ type Recipe struct {
 	RequiredTime int           `json:"requiredTime" gorm:"type:integer;not null"`
 	Difficulty   int           `json:"difficulty" gorm:"type:integer;not null"`
 	Servings     int           `json:"servings" gorm:"type:integer;not null"`
-	Steps        *string       `json:"steps" gorm:"type:varchar(1000);not null"`
+	Steps        string        `json:"steps" gorm:"type:varchar(1000);not null"`
 	Ingredients  []*Ingredient `json:"ingredients" gorm:"many2many:recipe_ingredients"`
 }
 

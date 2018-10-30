@@ -17,7 +17,7 @@ var ingredient = &m.Ingredient{
 	Type: "TestType",
 }
 
-func initializeDB() {
+func initializeDBIngredients() {
 	fmt.Println(os.Getenv("PORT"))
 	connection := fmt.Sprintf("host=localhost port=5432 user=postgres password=admin dbname=recipes-test sslmode=disable")
 	fmt.Println(connection)
@@ -36,15 +36,18 @@ func clearIngredientsTable() {
 }
 
 func TestIngredientTableExists(t *testing.T) {
-	initializeDB()
+	initializeDBIngredients()
 	if (!db.HasTable(&m.Ingredient{}) || !db.HasTable("ingredients")) {
 		t.Errorf("Table wasn't created correctly")
 	}
 }
 
 func TestCreateIngredient(t *testing.T) {
-	initializeDB()
-	ingredient.CreateIngredient(db)
+	initializeDBIngredients()
+	err := ingredient.CreateIngredient(db)
+	if err != nil {
+		t.Fatalf("Error creating ingredient")
+	}
 	var count int
 	db.Table("ingredients").Count(&count)
 	if count != 1 {
@@ -53,7 +56,7 @@ func TestCreateIngredient(t *testing.T) {
 }
 
 func TestGetIngredient(t *testing.T) {
-	initializeDB()
+	initializeDBIngredients()
 	ingredient.CreateIngredient(db)
 	createdIngredient, err := m.GetIngredient(db, "TestIngredient")
 	if err != nil {
@@ -61,5 +64,38 @@ func TestGetIngredient(t *testing.T) {
 	}
 	if createdIngredient.Type != "TestType" {
 		t.Errorf("Ingredient wasn't created correctly")
+	}
+}
+
+func TestUpdateIngredient(t *testing.T) {
+	initializeDBIngredients()
+	ingredient.CreateIngredient(db)
+
+	ingredient.Type = "NewTestType"
+
+	err := ingredient.UpdateIngredient(db)
+	if err != nil {
+		t.Fatalf("Error updating ingredient")
+	}
+
+	createdIngredient, _ := m.GetIngredient(db, "TestIngredient")
+	if createdIngredient.Type != "NewTestType" {
+		t.Errorf("Ingredient wasn't created correctly")
+	}
+}
+
+func TestDeleteIngredient(t *testing.T) {
+	initializeDBIngredients()
+	ingredient.CreateIngredient(db)
+
+	err := m.DeleteIngredient(db, "TestIngredient")
+	if err != nil {
+		t.Fatalf("Error deleting ingredient")
+	}
+
+	var count int
+	db.Table("ingredients").Count(&count)
+	if count != 0 {
+		t.Errorf("Ingredient wasn't deleted correctly")
 	}
 }
