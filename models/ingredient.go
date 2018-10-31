@@ -31,9 +31,9 @@ func GetIngredient(db *gorm.DB, name string) (*Ingredient, error) {
 }
 
 // GetIngredients Get all the ingredients from the database
-func GetIngredients(db *gorm.DB, start, count int) ([]Ingredient, error) {
+func GetIngredients(db *gorm.DB) ([]Ingredient, error) {
 	ingredients := make([]Ingredient, 0)
-	response := db.Limit(count).Offset(start).Find(&ingredients)
+	response := db.Find(&ingredients)
 	return ingredients, response.Error
 }
 

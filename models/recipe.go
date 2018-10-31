@@ -32,9 +32,9 @@ func GetRecipe(db *gorm.DB, id uint) (*Recipe, error) {
 }
 
 // GetRecipes Get all recipes from the database
-func GetRecipes(db *gorm.DB, start, count int) ([]Recipe, error) {
+func GetRecipes(db *gorm.DB) ([]Recipe, error) {
 	recipes := make([]Recipe, 0)
-	response := db.Limit(count).Offset(start).Preload("Ingredients").Find(&recipes)
+	response := db.Preload("Ingredients").Find(&recipes)
 	return recipes, response.Error
 }
 
@@ -42,6 +42,10 @@ func GetRecipes(db *gorm.DB, start, count int) ([]Recipe, error) {
 func (r *Recipe) UpdateRecipe(db *gorm.DB) error {
 	if response := db.Save(&r); response.Error != nil {
 		// Recipe update failed
+		return response.Error
+	}
+	if response := db.Model(r).Association("Ingredients").Replace(r.Ingredients); response.Error != nil {
+		// Recipe's ingredients update failed
 		return response.Error
 	}
 	return nil

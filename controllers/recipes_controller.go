@@ -55,17 +55,7 @@ func GetRecipe(w http.ResponseWriter, r *http.Request) {
 
 // GetRecipes Handle a request to get all recipes
 func GetRecipes(w http.ResponseWriter, r *http.Request) {
-	count, _ := strconv.Atoi(r.FormValue("count"))
-	start, _ := strconv.Atoi(r.FormValue("start"))
-
-	if count > 10 || count < 1 {
-		count = 10
-	}
-	if start < 0 {
-		start = 0
-	}
-
-	recipes, err := m.GetRecipes(a.GetDB(), start, count)
+	recipes, err := m.GetRecipes(a.GetDB())
 	if err != nil {
 		u.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return

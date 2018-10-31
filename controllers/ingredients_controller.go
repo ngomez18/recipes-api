@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -53,17 +52,7 @@ func GetIngredient(w http.ResponseWriter, r *http.Request) {
 
 // GetIngredients Handle a request to get all ingredients
 func GetIngredients(w http.ResponseWriter, r *http.Request) {
-	count, _ := strconv.Atoi(r.FormValue("count"))
-	start, _ := strconv.Atoi(r.FormValue("start"))
-
-	if count > 10 || count < 1 {
-		count = 10
-	}
-	if start < 0 {
-		start = 0
-	}
-
-	ingredients, err := m.GetIngredients(a.GetDB(), start, count)
+	ingredients, err := m.GetIngredients(a.GetDB())
 	if err != nil {
 		u.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
