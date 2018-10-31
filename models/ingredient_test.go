@@ -1,42 +1,24 @@
 package models_test
 
 import (
-	"fmt"
-	"log"
-	"os"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	m "github.com/ngomez22/recipes-api/models"
 )
 
-var db *gorm.DB
 var ingredient = &m.Ingredient{
 	Name: "TestIngredient",
 	Type: "TestType",
 }
-
-func initializeDBIngredients() {
-	fmt.Println(os.Getenv("PORT"))
-	connection := fmt.Sprintf("host=localhost port=5432 user=postgres password=admin dbname=recipes-test sslmode=disable")
-	fmt.Println(connection)
-	var err error
-	db, err = gorm.Open("postgres", connection)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Connection established with DB")
-	db.AutoMigrate(&m.Ingredient{})
-	clearIngredientsTable()
-}
-
-func clearIngredientsTable() {
-	db.Exec("DELETE FROM ingredients")
+var ingredientTwo = &m.Ingredient{
+	Name: "TestIngredient2",
+	Type: "TestType",
 }
 
 func TestIngredientTableExists(t *testing.T) {
-	initializeDBIngredients()
+	InitializeDB()
+
 	if (!db.HasTable(&m.Ingredient{}) || !db.HasTable("ingredients")) {
 		t.Errorf("Table wasn't created correctly")
 	}
@@ -46,10 +28,12 @@ func TestIngredientTableExists(t *testing.T) {
 	if count != 0 {
 		t.Errorf("Ingredients table isn't empty")
 	}
+
+	DropTables()
 }
 
 func TestCreateIngredient(t *testing.T) {
-	initializeDBIngredients()
+	InitializeDB()
 
 	var count int
 	db.Table("ingredients").Count(&count)
@@ -66,22 +50,45 @@ func TestCreateIngredient(t *testing.T) {
 	if count != 1 {
 		t.Errorf("Ingredient wasn't created correctly")
 	}
+
+	DropTables()
 }
 
 func TestGetIngredient(t *testing.T) {
-	initializeDBIngredients()
+	InitializeDB()
 	ingredient.CreateIngredient(db)
+
 	createdIngredient, err := m.GetIngredient(db, "TestIngredient")
 	if err != nil {
 		t.Fatalf("Error getting ingredient")
 	}
+
 	if createdIngredient.Type != "TestType" {
 		t.Errorf("Ingredient wasn't created correctly")
 	}
+
+	DropTables()
+}
+
+func TestGetIngredients(t *testing.T) {
+	InitializeDB()
+	ingredient.CreateIngredient(db)
+	ingredientTwo.CreateIngredient(db)
+
+	ingredients, err := m.GetIngredients(db)
+	if err != nil {
+		t.Fatalf("Error getting ingredients")
+	}
+
+	if len(ingredients) != 2 {
+		t.Errorf("Ingredient weren't retrieved correctly")
+	}
+
+	DropTables()
 }
 
 func TestUpdateIngredient(t *testing.T) {
-	initializeDBIngredients()
+	InitializeDB()
 	ingredient.CreateIngredient(db)
 
 	ingredient.Type = "NewTestType"
@@ -95,10 +102,12 @@ func TestUpdateIngredient(t *testing.T) {
 	if createdIngredient.Type != "NewTestType" {
 		t.Errorf("Ingredient wasn't created correctly")
 	}
+
+	DropTables()
 }
 
 func TestDeleteIngredient(t *testing.T) {
-	initializeDBIngredients()
+	InitializeDB()
 	ingredient.CreateIngredient(db)
 
 	err := m.DeleteIngredient(db, "TestIngredient")
@@ -111,4 +120,6 @@ func TestDeleteIngredient(t *testing.T) {
 	if count != 0 {
 		t.Errorf("Ingredient wasn't deleted correctly")
 	}
+
+	DropTables()
 }

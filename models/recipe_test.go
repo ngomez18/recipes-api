@@ -1,12 +1,8 @@
 package models_test
 
 import (
-	"fmt"
-	"log"
-	"os"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	m "github.com/ngomez22/recipes-api/models"
 )
@@ -31,27 +27,9 @@ var recipe = &m.Recipe{
 	},
 }
 
-func initializeDBRecipes() {
-	fmt.Println(os.Getenv("PORT"))
-	connection := fmt.Sprintf("host=localhost port=5432 user=postgres password=admin dbname=recipes-test sslmode=disable")
-	fmt.Println(connection)
-	var err error
-	db, err = gorm.Open("postgres", connection)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Connection established with DB")
-	db.AutoMigrate(&m.Recipe{}, &m.Ingredient{})
-	clearRecipesTable()
-}
-
-func clearRecipesTable() {
-	db.Exec("DELETE FROM recipes")
-	db.Exec("DELETE FROM recipe_ingredients")
-}
-
 func TestRecipesTableExists(t *testing.T) {
-	initializeDBRecipes()
+	InitializeDB()
+
 	if (!db.HasTable(&m.Recipe{}) || !db.HasTable("recipes")) {
 		t.Errorf("Recipes table wasn't created correctly")
 	}
@@ -64,10 +42,12 @@ func TestRecipesTableExists(t *testing.T) {
 	if count != 0 {
 		t.Errorf("Recipes table isn't empty")
 	}
+
+	DropTables()
 }
 
 func TestCreateRecipe(t *testing.T) {
-	initializeDBRecipes()
+	InitializeDB()
 
 	var count int
 	db.Table("recipes").Count(&count)
@@ -84,11 +64,14 @@ func TestCreateRecipe(t *testing.T) {
 	if count != 1 {
 		t.Errorf("Recipe wasn't created correctly")
 	}
+
+	DropTables()
 }
 
 func TestGetRecipe(t *testing.T) {
-	initializeDBRecipes()
+	InitializeDB()
 	recipe.CreateRecipe(db)
+
 	createdRecipe, err := m.GetRecipe(db, recipe.ID)
 	if err != nil {
 		t.Fatalf("Error getting recipe")
@@ -118,10 +101,29 @@ func TestGetRecipe(t *testing.T) {
 	if len(createdRecipe.Ingredients) != 2 {
 		t.Errorf("Recipe ingredienst weren't saved correctly")
 	}
+
+	DropTables()
+}
+
+func TestGetRecipes(t *testing.T) {
+	InitializeDB()
+	recipe.CreateRecipe(db)
+
+	recipes, err := m.GetRecipes(db)
+
+	if err != nil {
+		t.Fatalf("Error fetching recipes")
+	}
+
+	if len(recipes) != 1 {
+		t.Errorf("Recipes weren't retrieved correctly")
+	}
+
+	DropTables()
 }
 
 func TestUpdateRecipe(t *testing.T) {
-	initializeDBRecipes()
+	InitializeDB()
 	recipe.CreateRecipe(db)
 
 	recipe.Name = "NewName"
@@ -137,32 +139,34 @@ func TestUpdateRecipe(t *testing.T) {
 		t.Fatalf("Error updating recipe")
 	}
 
-	createdRecipe, _ := m.GetRecipe(db, recipe.ID)
-	if createdRecipe.Name != "NewName" {
+	updatedRecipe, _ := m.GetRecipe(db, recipe.ID)
+	if updatedRecipe.Name != "NewName" {
 		t.Errorf("Recipe name wasn't saved correctly")
 	}
-	if createdRecipe.Description != "NewDescription" {
+	if updatedRecipe.Description != "NewDescription" {
 		t.Errorf("Recipe description wasn't saved correctly")
 	}
-	if createdRecipe.Image != "NewImage" {
+	if updatedRecipe.Image != "NewImage" {
 		t.Errorf("Recipe image wasn't saved correctly")
 	}
-	if createdRecipe.RequiredTime != 100 {
+	if updatedRecipe.RequiredTime != 100 {
 		t.Errorf("Recipe required time wasn't saved correctly")
 	}
-	if createdRecipe.Difficulty != 5 {
+	if updatedRecipe.Difficulty != 5 {
 		t.Errorf("Recipe difficulty wasn't saved correctly")
 	}
-	if createdRecipe.Servings != 2 {
+	if updatedRecipe.Servings != 2 {
 		t.Errorf("Recipe servings weren't saved correctly")
 	}
-	if createdRecipe.Steps != "NewSteps" {
+	if updatedRecipe.Steps != "NewSteps" {
 		t.Errorf("Recipe steps weren't saved correctly")
 	}
+
+	DropTables()
 }
 
 func TestDeleteRecipe(t *testing.T) {
-	initializeDBRecipes()
+	InitializeDB()
 	recipe.CreateRecipe(db)
 
 	err := m.DeleteRecipe(db, recipe.ID)
@@ -170,9 +174,53 @@ func TestDeleteRecipe(t *testing.T) {
 		t.Fatalf("Error deleting recipe")
 	}
 
-	var count int
-	db.Table("recipes").Count(&count)
-	if count != 0 {
+	recipes, _ := m.GetRecipes(db)
+
+	if len(recipes) != 0 {
 		t.Errorf("Recipe wasn't deleted correctly")
 	}
+
+	DropTables()
+}
+
+func TestUpdateRecipeIngredients(t *testing.T) {
+	InitializeDB()
+	recipe.CreateRecipe(db)
+
+	newIngredients := []*m.Ingredient{
+		{
+			Name: "NewIngredientOne",
+			Type: "TypeOne",
+		},
+		{
+			Name: "NewIngredientTwo",
+			Type: "TypeTwo",
+		},
+		{
+			Name: "IngredientThree",
+			Type: "TypeThree",
+		},
+	}
+	recipe.Ingredients = newIngredients
+
+	err := recipe.UpdateRecipe(db)
+	if err != nil {
+		t.Fatalf("Error updating recipe")
+	}
+
+	createdRecipe, _ := m.GetRecipe(db, recipe.ID)
+	if len(createdRecipe.Ingredients) != len(newIngredients) {
+		t.Errorf("Recipe's ingredients weren't udpated correctly")
+	}
+
+	for i := range createdRecipe.Ingredients {
+		if createdRecipe.Ingredients[i].Name != newIngredients[i].Name {
+			t.Errorf("Recipe's ingredients weren't udpated correctly")
+		}
+		if createdRecipe.Ingredients[i].Type != newIngredients[i].Type {
+			t.Errorf("Recipe's ingredients weren't udpated correctly")
+		}
+	}
+
+	DropTables()
 }
