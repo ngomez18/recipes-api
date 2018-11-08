@@ -40,4 +40,5 @@ func initializeRecipeRoutes(r *mux.Router) {
 	r.HandleFunc("/api/recipes", c.GetRecipes).Methods("GET")
 	r.HandleFunc("/api/recipe", c.UpdateRecipe).Methods("PUT")
 	r.HandleFunc("/api/recipe/{id:[0-9]+}", c.DeleteRecipe).Methods("DELETE")
+	r.HandleFunc("/api/recipes/name/{name:[A-z]+}", c.GetRecipesByName).Methods("GET")
 }

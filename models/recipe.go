@@ -59,3 +59,10 @@ func DeleteRecipe(db *gorm.DB, id uint) error {
 	}
 	return nil
 }
+
+// GetRecipesByName Get recipes that match a given name
+func GetRecipesByName(db *gorm.DB, name string) ([]Recipe, error) {
+	recipes := make([]Recipe, 0)
+	response := db.Preload("Ingredients").Where("name ILIKE ?", name+"%").Find(&recipes)
+	return recipes, response.Error
+}

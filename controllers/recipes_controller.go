@@ -99,3 +99,16 @@ func DeleteRecipe(w http.ResponseWriter, r *http.Request) {
 
 	u.RespondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
+
+// GetRecipesByName Handle a request to get recipes that match a given name
+func GetRecipesByName(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	name := vars["name"]
+	recipes, err := m.GetRecipesByName(a.GetDB(), name)
+	if err != nil {
+		u.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	u.RespondWithJSON(w, http.StatusOK, recipes)
+}
