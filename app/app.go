@@ -17,15 +17,14 @@ var db *gorm.DB
 
 // Initialize app components
 func Initialize(host, port, user, password, dbname, ssl string) {
-	connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		host, port, user, password, dbname, ssl)
+	addr := fmt.Sprintf("postgresql://%s@%s:%s/%s?sslmode=%s", user, host, port, dbname, ssl)
 	var err error
-	db, err = gorm.Open("postgres", connection)
+	db, err = gorm.Open("postgres", addr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Connection established with DB")
-	fmt.Println(connection)
+	fmt.Println(addr)
 
 	db.AutoMigrate(&m.Recipe{}, &m.Ingredient{})
 	router = mux.NewRouter()
